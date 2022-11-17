@@ -9,11 +9,11 @@ class BlogCategory(models.Model):
 
     class Meta:
         verbose_name = 'категория блога'
-        verbose_name_plural = 'категория блога'
+        verbose_name_plural = 'категории блога'
 
 
 class Article(models.Model):
-    category = models.ForeignKey(to=BlogCategory,verbose_name='категория', on_delete=models.CASCADE)
+    category = models.ForeignKey(to=BlogCategory, verbose_name='категория', on_delete=models.CASCADE)
     title = models.CharField(verbose_name='Заголовок', max_length=255)
     text_preview = models.TextField(verbose_name='Текст-ревью', null=True, blank=True)
     text = models.TextField(verbose_name='Текст')
@@ -27,3 +27,15 @@ class Article(models.Model):
     class Meta:
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
+
+
+class Tag(models.Model):
+    name = models.CharField('Текст', max_length=255)
+    tg_art = models.ManyToManyField(Article)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'тег'
+        verbose_name_plural = 'теги'
