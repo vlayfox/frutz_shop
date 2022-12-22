@@ -1,4 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
 <h2>{{ article.title }}</h2>
+<img class="img-thumbnail" src="{{ article.image.url }}" alt="">
 <p>{{ article.text }}</p>
 <p>
     {% for tag in article.tags.all %}
@@ -10,3 +13,6 @@
     Дата <b>{{ article.publish_date }}</b>
     Категория <b>{{ category.name }}</b>
 </p>
+
+{% endblock %}
+
