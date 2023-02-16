@@ -1,15 +1,18 @@
 from django.db import models
-from imagekit.models import ProcessedImageField,ImageSpecField
+from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFill
+from django.utils.safestring import mark_safe
+from config.settings import MEDIA_ROOT
+
+
 class BlogCategory(models.Model):
     name = models.CharField(verbose_name='имя категории', max_length=255)
-    image=ProcessedImageField(
+    image = ProcessedImageField(
         verbose_name='Изображение',
         upload_to='blog/category/',
-        processors=[ResizeToFill(600,400)],
+        processors=[ResizeToFill(600, 400)],
         null=True,
         blank=True,
-
 
     )
 
@@ -20,6 +23,14 @@ class BlogCategory(models.Model):
         verbose_name = 'категория блога'
         verbose_name_plural = 'категории блога'
 
+    def image_tag_thumbnail(self):
+        if self.image:
+            return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}'width='70'>")
+    image_tag_thumbnail.short_description='Изображение'
+    def image_tag(self):
+        if self.image:
+            return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}'>")
+    image_tag.short_description='Изображение'
 
 class Tag(models.Model):
     name = models.CharField('Название тега', max_length=255)
@@ -48,12 +59,12 @@ class Article(models.Model):
         blank=True,
 
     )
-    image_thumbnail =ImageSpecField(
+    image_thumbnail = ImageSpecField(
         source='image',
-        processors=[ResizeToFill(600,400)]
-
+        processors=[ResizeToFill(600, 400)]
 
     )
+
     def __str__(self):
         return self.title
 
