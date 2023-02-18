@@ -2,6 +2,8 @@ from django.db import models
 from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFill
 from django.utils.safestring import mark_safe
+
+from apps.user.models import User
 from config.settings import MEDIA_ROOT
 
 
@@ -26,11 +28,15 @@ class BlogCategory(models.Model):
     def image_tag_thumbnail(self):
         if self.image:
             return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}'width='70'>")
-    image_tag_thumbnail.short_description='Изображение'
+
+    image_tag_thumbnail.short_description = 'Изображение'
+
     def image_tag(self):
         if self.image:
             return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}'>")
-    image_tag.short_description='Изображение'
+
+    image_tag.short_description = 'Изображение'
+
 
 class Tag(models.Model):
     name = models.CharField('Название тега', max_length=255)
@@ -45,6 +51,7 @@ class Tag(models.Model):
 
 class Article(models.Model):
     category = models.ForeignKey(to=BlogCategory, verbose_name='категория', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='Автор', on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(verbose_name='Заголовок', max_length=255)
     text_preview = models.TextField(verbose_name='Текст-ревью', null=True, blank=True)
     text = models.TextField(verbose_name='Текст', blank=True)
@@ -54,14 +61,14 @@ class Article(models.Model):
     tags = models.ManyToManyField(to=Tag, verbose_name='Теги', blank=True)
     image = ProcessedImageField(
         verbose_name='Изображение',
-        upload_to='blog/article/',
+        upload_to='user/',
         null=True,
         blank=True,
 
     )
     image_thumbnail = ImageSpecField(
         source='image',
-        processors=[ResizeToFill(600, 400)]
+        processors=[ResizeToFill(200, 200)]
 
     )
 
