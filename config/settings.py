@@ -37,8 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'phonenumber_field',
+    'mptt',
+    'treebeard',
+
     'apps.blog',
     'apps.user',
+    'apps.catalog',
 
 ]
 
