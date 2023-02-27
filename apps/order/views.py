@@ -1,7 +1,9 @@
+from django.db import transaction
+from django.db.transaction import atomic
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from apps.order.forms import AddCartForm, CreateOrderForm
-from apps.order.models import Cart
+from apps.order.models import Cart, OrderProduct
 
 
 def get_cart_data(user):
@@ -48,14 +50,24 @@ def create_order(request):
 
     if request.method == 'POST':
         data = request.POST.copy()
-        data.update(user=user,total=cart['total'])
+        data.update(user=user, total=cart['total'])
         request.POST = data
         form = CreateOrderForm(request.POST)
         if form.is_valid():
-            form.save()
-            Cart.objects.filter(user=user).delete()
-            return render(request, 'order/created.html')
-        error=form.errors
+            with transaction.atomic():
+                order = form.save()
+                order_products = Cart.objects.filter(user=user).select_related('product')
+                for order_product in order_products:
+                    OrderProduct.objects.create(
+                        order=order, product=order_product.product,
+                        quantity=order_product.quantity,
+                        price=order_product.product.price
+                    )
+                Cart.objects.filter(user=user).delete()
+                return render(request, 'order/created.html')
+
+            error='Заказ не создан''Ошибка'
+        error = form.errors
 
 
     else:
