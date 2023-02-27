@@ -132,6 +132,12 @@ class Product(MetaTagMixin):
         if image:
             return image.image_tag_thumbnail()
 
+    def main_category(self):
+        category = self.categories.filter(productcategory__is_main=True).first()
+        if category:
+            return category
+        return self.categories.first()
+
     def get_absolute_url(self):
         return reverse('product', args=[self.slug])
 
