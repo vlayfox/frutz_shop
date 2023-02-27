@@ -23,5 +23,5 @@ class ProductImageInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ['name']}
     inlines = [ProductCategoryInline, ProductImageInline]
-    list_display = ['id', 'image_tag', 'name', 'price', 'created_at']
+    list_display = ['id', 'image_tag', 'name', 'price', 'created_at','user']
     list_display_links = ['id', 'name', 'image_tag']
