@@ -12,7 +12,7 @@ class UserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (_("Персональные данные"),
-         {"fields": ("first_name", "last_name", "email", "phone", "image_tag", "image")}),
+         {"fields": ("first_name", "last_name", "email", "phone", "image_tag", "image",'about')}),
         (
             _("Permissions"),
             {
