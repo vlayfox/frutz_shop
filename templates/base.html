@@ -28,9 +28,19 @@
         <div class="col-6">
             <img src="{% static 'img/logo.png' %}" alt="" id="logo">
         </div>
-        <div class="col-6"><p class="header-text">Узнайте новый вкус природы!<br>  <br>График работы : Круглосуточно!
+        <div class="col-6">
+            <p class="header-text">Узнайте новый вкус природы!<br>  <br>График работы : Круглосуточно!
             <br>  <br>Связаться с нами: <br>Почта: FRUTZSHP@gmail.com<br>Телефон:928340830
-        </p>   </div>
+        </p>
+        {% if request.user.is_authenticated %}
+            <br>  <br> <br>  <br> <br>  <br> <br>  <br>
+            <p class="text-end">Привет, {{ request.user.username }} (<a href="{% url 'logout' %}">Выйти</a>)   </p>
+        {% else %}
+            <br>  <br> <br>  <br> <br>  <br> <br>  <br>
+            <p  class="text-end"><a href="{% url 'login' %}">Войти</a>&nbsp;<a href="{% url 'register' %}">Зарегистрироваться</a></p>
+        {% endif %} 
+
+        </div>
 
 
     </div>
