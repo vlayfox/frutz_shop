@@ -5,10 +5,11 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.urls import reverse
 from pilkit.processors import ResizeToFill
 
+from apps.main.mixins import MetaTagMixin
 from config.settings import MEDIA_ROOT
 
 
-class Category(MPTTModel):
+class Category(MPTTModel, MetaTagMixin):
     name = models.CharField(verbose_name='Название', max_length=255)
     slug = models.SlugField(unique=True, verbose_name='Слаг(ЧПУ)')
     description = models.TextField(verbose_name='Описание', null=True, blank=True)
@@ -90,7 +91,7 @@ class ProductImage(models.Model):
 
         if not self.image_thumbnail:
             ProductImage.objects.get(id=self.id)
-        return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image_thumbnail}>")
+        return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image_thumbnail}'>")
 
     image_tag.short_description = 'Текущее изображение'
 
@@ -100,7 +101,7 @@ class ProductImage(models.Model):
         super().save(force_insert, force_update, using, update_fields)
 
 
-class Product(models.Model):
+class Product(MetaTagMixin):
     name = models.CharField(verbose_name='Название', max_length=255)
     slug = models.SlugField(unique=True, verbose_name='Слаг(ЧПУ)')
     description = models.TextField(verbose_name='Описание', null=True, blank=True)
@@ -127,10 +128,9 @@ class Product(models.Model):
         return image
 
     def image_tag(self):
-        image=self.main_image()
+        image = self.main_image()
         if image:
             return image.image_tag_thumbnail()
-
 
     def get_absolute_url(self):
         return reverse('product', args=[self.slug])
